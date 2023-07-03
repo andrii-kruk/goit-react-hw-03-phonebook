@@ -11,14 +11,22 @@ const { section, contacts_container, contact_list_title } = css;
 
 export class App extends Component {
   state = {
-    contacts: [
-      { id: nanoid(), name: 'Rosie Simpson', number: '459-12-56' },
-      { id: nanoid(), name: 'Hermione Kline', number: '443-89-12' },
-      { id: nanoid(), name: 'Eden Clements', number: '645-17-79' },
-      { id: nanoid(), name: 'Annie Copeland', number: '227-91-26' },
-    ],
+    contacts: [],
     filter: '',
   };
+
+  componentDidMount() {
+    const storagedContacts = localStorage.getItem('contacts',JSON.stringify(this.state.contacts));
+    const parsedContacts = JSON.parse(storagedContacts) ?? [];
+    
+    this.setState({ contacts: parsedContacts });
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.contacts.length !== this.state.contacts.length) {
+      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
+    }
+  }
 
   addContactToList = contact => {
     if (this.state.contacts.some(user => user.name === contact.name)) {
