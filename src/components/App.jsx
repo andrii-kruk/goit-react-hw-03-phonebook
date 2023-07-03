@@ -1,13 +1,36 @@
 import React, { Component } from 'react';
-
-import css from './App.module.css';
+import { ToastContainer, toast } from 'react-toastify';
 
 import ContactForm from './ContactForm/ContactForm';
 import Filter from './Filter/Filter';
 import ContactList from './ContactList/ContactList';
-import { nanoid } from 'nanoid';
+
+import 'react-toastify/dist/ReactToastify.css';
+import css from './App.module.css';
 
 const { section, contacts_container, contact_list_title } = css;
+
+const errorNotifyOptions = {
+  position: 'top-center',
+  autoClose: 1000,
+  hideProgressBar: false,
+  closeOnClick: true,
+  pauseOnHover: true,
+  draggable: true,
+  progress: undefined,
+  theme: 'dark',
+};
+
+const succesNotifyOptions = {
+  position: 'top-center',
+  autoClose: 1000,
+  hideProgressBar: false,
+  closeOnClick: true,
+  pauseOnHover: true,
+  draggable: true,
+  progress: undefined,
+  theme: 'dark',
+};
 
 export class App extends Component {
   state = {
@@ -16,9 +39,12 @@ export class App extends Component {
   };
 
   componentDidMount() {
-    const storagedContacts = localStorage.getItem('contacts',JSON.stringify(this.state.contacts));
+    const storagedContacts = localStorage.getItem(
+      'contacts',
+      JSON.stringify(this.state.contacts)
+    );
     const parsedContacts = JSON.parse(storagedContacts) ?? [];
-    
+
     this.setState({ contacts: parsedContacts });
   }
 
@@ -30,13 +56,15 @@ export class App extends Component {
 
   addContactToList = contact => {
     if (this.state.contacts.some(user => user.name === contact.name)) {
-      alert('Contact already exists');
+      toast.error('This contanct already added', errorNotifyOptions);
       return;
     }
 
     this.setState(prevState => ({
       contacts: [...prevState.contacts, contact],
     }));
+
+    toast.success('Contact seccesfuly added!', succesNotifyOptions);
   };
 
   removeContactFromList = index => {
@@ -77,6 +105,18 @@ export class App extends Component {
             </>
           )}
         </div>
+        <ToastContainer
+          position="top-center"
+          autoClose={1000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="dark"
+        />
       </section>
     );
   }
